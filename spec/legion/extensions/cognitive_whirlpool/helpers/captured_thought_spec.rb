@@ -89,6 +89,42 @@ RSpec.describe Legion::Extensions::CognitiveWhirlpool::Helpers::CapturedThought 
     end
   end
 
+  describe '#decay!' do
+    it 'increases distance_from_core' do
+      thought.spiral!(rate: 0.5)
+      before = thought.distance_from_core
+      thought.decay!
+      expect(thought.distance_from_core).to be > before
+    end
+
+    it 'uses CAPTURE_DECAY_RATE by default' do
+      thought.spiral!(rate: 0.5)
+      before = thought.distance_from_core
+      thought.decay!
+      rate = Legion::Extensions::CognitiveWhirlpool::Helpers::Constants::CAPTURE_DECAY_RATE
+      expect(thought.distance_from_core).to be_within(0.0001).of(before + rate)
+    end
+
+    it 'does nothing if thought has escaped' do
+      thought.escape!
+      before = thought.distance_from_core
+      thought.decay!
+      expect(thought.distance_from_core).to eq(before)
+    end
+
+    it 'auto-escapes when distance reaches ESCAPE_DISTANCE' do
+      t = described_class.new(content: 'near edge', distance_from_core: 0.99)
+      t.decay!
+      expect(t.escaped?).to be true
+    end
+
+    it 'clamps distance_from_core to ESCAPE_DISTANCE' do
+      t = described_class.new(content: 'near edge', distance_from_core: 0.99)
+      t.decay!
+      expect(t.distance_from_core).to eq(1.0)
+    end
+  end
+
   describe '#at_core?' do
     it 'returns false when distance_from_core is large' do
       expect(thought.at_core?).to be false

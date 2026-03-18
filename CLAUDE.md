@@ -3,7 +3,7 @@
 **Level 3 Leaf Documentation**
 - **Parent**: `/Users/miverso2/rubymine/legion/extensions-agentic/CLAUDE.md`
 - **Gem**: `lex-cognitive-whirlpool`
-- **Version**: 0.1.0
+- **Version**: 0.1.1
 - **Namespace**: `Legion::Extensions::CognitiveWhirlpool`
 
 ## Purpose
@@ -44,7 +44,7 @@ lib/legion/extensions/cognitive_whirlpool/
 | `POWERFUL_VELOCITY` | 0.7 | Angular velocity >= this = `powerful?` true |
 | `CALM_VELOCITY` | 0.2 | Angular velocity <= this = `calm?` true |
 | `ANGULAR_VELOCITY_MIN` | 0.1 | Minimum clamped angular velocity at creation |
-| `CAPTURE_DECAY_RATE` | 0.03 | Defined but not used by the engine currently |
+| `CAPTURE_DECAY_RATE` | 0.03 | Thought drift rate per `dissipate!` call; auto-escapes at `ESCAPE_DISTANCE` |
 
 `VORTEX_TYPES`: `[:analytical, :creative, :emotional, :procedural, :associative]`
 
@@ -119,5 +119,5 @@ All runners accept optional `engine:` keyword for test injection.
 - Angular velocity minimum at creation is `ANGULAR_VELOCITY_MIN = 0.1` — vortices cannot be created stationary
 - `tick!` spiral rate = `spiral_rate || (SPIRAL_RATE_DEFAULT * angular_velocity)` — faster vortices spiral thoughts inward faster
 - `dissipate_all!` removes vortices in-place after dissipation (the `reject!` call); total dissipated = before minus remaining
-- `CAPTURE_DECAY_RATE = 0.03` is defined but not used in the current implementation
+- `CAPTURE_DECAY_RATE = 0.03` is enforced: `Vortex#dissipate!` calls `decay!` on all captured thoughts, increasing their `distance_from_core`; thoughts that drift to `ESCAPE_DISTANCE` (1.0) auto-escape
 - Vortex `depth` increases each tick regardless of whether the vortex has captured thoughts

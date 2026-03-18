@@ -27,6 +27,13 @@ module Legion
             @distance_from_core = (@distance_from_core - rate).clamp(0.0, Constants::CAPTURE_RADIUS_MAX)
           end
 
+          def decay!(rate: Constants::CAPTURE_DECAY_RATE)
+            return if @escaped
+
+            @distance_from_core = (@distance_from_core + rate).clamp(0.0, ESCAPE_DISTANCE)
+            escape! if @distance_from_core >= ESCAPE_DISTANCE
+          end
+
           def at_core?
             @distance_from_core <= CORE_DISTANCE
           end

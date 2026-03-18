@@ -103,6 +103,23 @@ RSpec.describe Legion::Extensions::CognitiveWhirlpool::Helpers::Vortex do
       vortex.dissipate!(rate: 0.4)
       expect(vortex.angular_velocity).to be < 0.5
     end
+
+    it 'decays captured thoughts distance from core' do
+      vortex.capture!(thought)
+      thought.spiral!(rate: 0.5)
+      before = thought.distance_from_core
+      vortex.dissipate!
+      expect(thought.distance_from_core).to be > before
+    end
+
+    it 'auto-escapes thoughts that drift to ESCAPE_DISTANCE' do
+      near_edge = Legion::Extensions::CognitiveWhirlpool::Helpers::CapturedThought.new(
+        content: 'drifting', distance_from_core: 0.99
+      )
+      vortex.capture!(near_edge)
+      vortex.dissipate!
+      expect(near_edge.escaped?).to be true
+    end
   end
 
   describe '#powerful?' do

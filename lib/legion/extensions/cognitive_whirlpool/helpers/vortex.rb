@@ -37,6 +37,7 @@ module Legion
           def dissipate!(rate: Constants::VELOCITY_DECAY)
             @angular_velocity = (@angular_velocity - rate).clamp(0.0, Constants::ANGULAR_VELOCITY_MAX)
             @capture_radius   = (@capture_radius - (rate * 0.5)).clamp(0.0, Constants::CAPTURE_RADIUS_MAX)
+            @captured_thoughts.each(&:decay!)
             self
           end
 
